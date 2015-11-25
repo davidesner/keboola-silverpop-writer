@@ -1,6 +1,6 @@
 /*
  */
-package cz.kbc.silverpop.xmlapi.commands;
+package cz.kbc.silverpop.xmlapi.pojo.commands;
 
 /**
  *
@@ -12,7 +12,7 @@ package cz.kbc.silverpop.xmlapi.commands;
  * parameter is not set: if set to NULL
  */
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import cz.kbc.silverpop.xmlapi.results.ExportListResult;
+import cz.kbc.silverpop.xmlapi.pojo.results.ExportListResult;
 import java.util.Map;
 
 //@XStreamAlias("ExportList")

@@ -1,9 +1,9 @@
 /*
  */
-package cz.kbc.silverpop.xmlapi.commands;
+package cz.kbc.silverpop.xmlapi.pojo.commands;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import cz.kbc.silverpop.xmlapi.results.RawRecipientDataExportResult;
+import cz.kbc.silverpop.xmlapi.pojo.results.RawRecipientDataExportResult;
 
 /**
  *

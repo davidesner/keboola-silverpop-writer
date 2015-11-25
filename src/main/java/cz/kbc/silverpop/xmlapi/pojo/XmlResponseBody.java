@@ -1,10 +1,10 @@
 /*
  */
-package cz.kbc.silverpop.xmlapi.response;
+package cz.kbc.silverpop.xmlapi.pojo;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import cz.kbc.silverpop.xmlapi.results.SPError;
-import cz.kbc.silverpop.xmlapi.results.SPResult;
+import cz.kbc.silverpop.xmlapi.pojo.results.SPError;
+import cz.kbc.silverpop.xmlapi.pojo.results.SPResult;
 
 /**
  *

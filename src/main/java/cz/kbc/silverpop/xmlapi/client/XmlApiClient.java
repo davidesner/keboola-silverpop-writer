@@ -3,29 +3,25 @@
 package cz.kbc.silverpop.xmlapi.client;
 
 import com.thoughtworks.xstream.XStream;
-import cz.kbc.silverpop.xmlapi.commands.SPCommand;
-import cz.kbc.silverpop.xmlapi.request.XmlRequestBody;
-import cz.kbc.silverpop.xmlapi.request.XmlRequestEnvelope;
+import cz.kbc.silverpop.xmlapi.pojo.commands.LoginCommand;
+import cz.kbc.silverpop.xmlapi.pojo.commands.SPCommand;
+import cz.kbc.silverpop.xmlapi.pojo.results.LoginResult;
+import cz.kbc.silverpop.xmlapi.pojo.results.SPResult;
+import cz.kbc.silverpop.xmlapi.pojo.XmlRequestBody;
+import cz.kbc.silverpop.xmlapi.pojo.XmlRequestEnvelope;
+import cz.kbc.silverpop.xmlapi.pojo.XmlResponseEnvelope;
 import cz.kbc.silverpop.xmlapi.xstream.XStreamFactory;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Form;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import org.apache.commons.validator.routines.UrlValidator;
+import org.apache.http.HttpHeaders;
 
-import org.apache.http.Header;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
@@ -42,27 +38,51 @@ import org.apache.oltu.oauth2.common.message.types.GrantType;
 public class XmlApiClient {
 
     private final String apiUrl;
-    private final String CLIENT_ID;
-    private final String CLIENT_SECRET;
-    private final String REFRESH_TOKEN;
-    private ApiAccessToken accessToken;
-    // private final int podNumber;
+    private String CLIENT_ID;
+    private String CLIENT_SECRET;
+    private String REFRESH_TOKEN;
+    private String USER_NAME;
+    private String PASSWORD;
+    private ApiSession session;
 
+    public XmlApiClient() {
+        this.apiUrl = null;
+    }
+    private ApiAccessToken accessToken;
+
+    /**
+     * Constructor to use with OAuth 2.0 auth.
+     *
+     * @param CLIENT_ID
+     * @param CLIENT_SECRET
+     * @param REFRESH_TOKEN
+     * @param apiUrl
+     */
     public XmlApiClient(String CLIENT_ID, String CLIENT_SECRET, String REFRESH_TOKEN, String apiUrl) {
 
         this.CLIENT_ID = CLIENT_ID;
         this.CLIENT_SECRET = CLIENT_SECRET;
         this.REFRESH_TOKEN = REFRESH_TOKEN;
-        //this.podNumber = podNumber;
-        //this.apiUrl = "https://api[" + podNumber + "ibmmarketingcloud.com/";
         this.apiUrl = apiUrl;
     }
 
-    public String performRequest(SPCommand command) {
+    /**
+     * Consctructor to use with Login - session_id auth method
+     *
+     * @param USER_NAME
+     * @param PASSWORD
+     * @param apiUrl
+     */
+    public XmlApiClient(String USER_NAME, String PASSWORD, String apiUrl) {
+        this.USER_NAME = USER_NAME;
+        this.PASSWORD = PASSWORD;
+        this.apiUrl = apiUrl;
+    }
 
+    public SPResult performRequest(SPCommand command) throws ApiException {
+        /*Build XML request command*/
         XStream xstream = XStreamFactory.getXstream2();
         //XStream xstream = new XStream();
-
 
         //place command in Envelope wrapper
         XmlRequestEnvelope request = new XmlRequestEnvelope(command);
@@ -75,7 +95,40 @@ public class XmlApiClient {
         //remove class attribute
         xstream.aliasSystemAttribute(null, "class");
 
-        return xstream.toXML(request);
+        Client client = ClientBuilder.newClient();
+        Form form = new Form("xml", xstream.toXML(request));
+
+        Entity postRequest = Entity.form(form);
+
+        Response response = client.target(apiUrl)
+                .request(MediaType.APPLICATION_XML)
+                .header("Content-Type", "text/xml; charset=UTF-8")
+                .post(postRequest);
+
+        if (response.getStatus() > 300) {
+            throw new ApiException("Failed : HTTP error code : "
+                    + response.getStatus());
+        }
+        /*Proccess/parse the response*/
+        xstream = new XStream();
+        XmlResponseEnvelope responseEnv = new XmlResponseEnvelope();
+        xstream.processAnnotations(XmlResponseEnvelope.class);
+        xstream.processAnnotations(command.getResultType());
+        String responseBody = response.readEntity(String.class);
+
+        SPResult result = null;
+        try {
+            responseEnv = (XmlResponseEnvelope) xstream.fromXML(responseBody);
+        } catch (Exception ex) {
+            ex.getMessage();
+        }
+        return result;
+
+    }
+
+    public void login() throws ApiException {
+        LoginResult result = (LoginResult) performRequest(new LoginCommand(USER_NAME, PASSWORD));
+        this.session = new ApiSession(result);
 
     }
 
@@ -108,29 +161,7 @@ public class XmlApiClient {
             //set the access token
             this.accessToken = new ApiAccessToken(oAuthResponse.getAccessToken(), oAuthResponse.getExpiresIn());
 
-            /* //oauth client using Apache HC
-             CloseableHttpClient client = HttpClients.createDefault();
-             HttpPost httpPost = new HttpPost(apiUrl + "/oauth/token");
-
-             List<NameValuePair> params = new ArrayList<NameValuePair>();
-             params.add(new BasicNameValuePair("grant_type", "refresh_token"));
-             params.add(new BasicNameValuePair("client_id", CLIENT_ID));
-             params.add(new BasicNameValuePair("client_secret", CLIENT_SECRET));
-             params.add(new BasicNameValuePair("refresh_token", REFRESH_TOKEN));
-             //httpPost.setHeader("Accept", "application/json");
-             httpPost.setHeader("Content-type", "application/x-www-form-urlencoded");
-             httpPost.setEntity(new UrlEncodedFormEntity(params));
-             CloseableHttpResponse response = client.execute(httpPost);
-             Header[] headers = response.getAllHeaders();
-             client.close();
-            
-
-
-             } catch (MalformedURLException ex) {
-             Logger.getLogger(XmlApiClient.class.getName()).log(Level.SEVERE, null, ex);
-             } catch (IOException ex) {
-             Logger.getLogger(XmlApiClient.class.getName()).log(Level.SEVERE, null, ex);
-             */        } catch (OAuthSystemException ex) {
+        } catch (OAuthSystemException ex) {
             Logger.getLogger(XmlApiClient.class.getName()).log(Level.SEVERE, null, ex);
         } catch (OAuthProblemException ex) {
             Logger.getLogger(XmlApiClient.class.getName()).log(Level.SEVERE, null, ex);

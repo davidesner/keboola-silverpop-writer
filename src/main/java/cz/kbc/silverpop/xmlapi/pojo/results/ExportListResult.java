@@ -1,6 +1,6 @@
 /*
  */
-package cz.kbc.silverpop.xmlapi.results;
+package cz.kbc.silverpop.xmlapi.pojo.results;
 
 /**
  *
