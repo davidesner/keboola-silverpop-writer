@@ -123,8 +123,8 @@ public class Run {
                     }
                     mapColumns.put(s + 1, entry.getValue());
                 } else {//error if mapping column does not exist
-                    System.out.println(headers[s] + " column specified in mapping parameter not found in the source file.");
-                    System.err.println(headers[s] + " column specified in mapping parameter not found in the source file.");
+                    System.out.println(entry.getValue() + " column specified in mapping parameter not found in the source file.");
+                    System.err.println(entry.getValue() + " column specified in mapping parameter not found in the source file.");
                     System.exit(1);
                 }
 
