@@ -10,12 +10,21 @@ import keboola.silverpop.ftp.SFTPClient;
 import keboola.silverpop.xmlapi.pojo.results.GetJobStatusResult;
 
 /**
+ * Utility class implementing methods for proccessing of API Results.
  *
  * @author David Esner <esnerda at gmail.com>
  * @created 2015
  */
 public class ApiResultProcessor {
 
+    /**
+     * Proccess JobStatus command result and retrieve error message from FTP
+     * (download folder)
+     *
+     * @param res - GetJobStatusResult
+     * @param ftpclient - inicialized SFTP client
+     * @return
+     */
     public static DataJobResult proccessDataJob(GetJobStatusResult res, SFTPClient ftpclient) {
         if (!res.isSuccess()) {
             return new DataJobResult(false);

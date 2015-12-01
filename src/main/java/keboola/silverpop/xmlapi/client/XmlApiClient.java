@@ -2,7 +2,6 @@
  */
 package keboola.silverpop.xmlapi.client;
 
-import com.jcraft.jsch.Session;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.basic.NullConverter;
 
@@ -18,26 +17,15 @@ import keboola.silverpop.xmlapi.pojo.results.LoginResult;
 import keboola.silverpop.xmlapi.pojo.results.SPError;
 import keboola.silverpop.xmlapi.xstream.XStreamFactory;
 import java.io.StringReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.apache.commons.validator.routines.UrlValidator;
-import org.apache.http.HttpHeaders;
-
-import org.apache.oltu.oauth2.client.OAuthClient;
-import org.apache.oltu.oauth2.client.URLConnectionClient;
-import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
-import org.apache.oltu.oauth2.client.response.GitHubTokenResponse;
-import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
-import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
-import org.apache.oltu.oauth2.common.message.types.GrantType;
 
 /**
+ * Engage XML API Client. Ready for OAuth 2.0 authentization support.
  *
  * @author David Esner <esnerda at gmail.com>
  * @created 2015
@@ -92,7 +80,7 @@ public class XmlApiClient {
      *
      * @param command
      * @return
-     * @throws ApiException
+     * @throws ApiException - if it is unable to renew session.
      */
     public XmlResponseBody apiRequest(SPCommandBody command) throws ApiException {
         XmlResponseBody result = performRequest(command);
@@ -163,6 +151,11 @@ public class XmlApiClient {
         return result;
     }
 
+    /**
+     * Login using LOGIN API call. Retrieves and establishes SESSION ID.
+     *
+     * @throws ApiException
+     */
     public void login() throws ApiException {
         XmlResponseBody result = (XmlResponseBody) performRequest(new LoginCommandBody(USER_NAME, PASSWORD));
         this.session = new ApiSession((LoginResult) result.getResult());
@@ -171,6 +164,11 @@ public class XmlApiClient {
         }
     }
 
+    /**
+     * Logout using LOGOUT API call.
+     *
+     * @throws ApiException
+     */
     public void logout() throws ApiException {
         XmlResponseBody result = (XmlResponseBody) performRequest(new LogoutCommandBody());
         if (!result.getResult().isSuccess()) {

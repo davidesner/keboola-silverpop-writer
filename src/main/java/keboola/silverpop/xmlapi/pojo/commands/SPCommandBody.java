@@ -10,5 +10,10 @@ package keboola.silverpop.xmlapi.pojo.commands;
  */
 public interface SPCommandBody {
 
+    /**
+     * Returns class type of related API Response object.
+     *
+     * @return
+     */
     public Class getResultType();
 }

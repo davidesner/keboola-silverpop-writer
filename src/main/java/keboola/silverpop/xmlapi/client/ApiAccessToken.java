@@ -3,6 +3,7 @@
 package keboola.silverpop.xmlapi.client;
 
 /**
+ * Pojo class of Engage XML API response wrapper.
  *
  * @author David Esner <esnerda at gmail.com>
  * @created 2015

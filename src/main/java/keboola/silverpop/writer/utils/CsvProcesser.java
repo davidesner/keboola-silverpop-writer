@@ -19,6 +19,13 @@ import java.util.logging.Logger;
  */
 public class CsvProcesser {
 
+    /**
+     * Retrieves header of the given CSV file as array of Strings
+     *
+     * @param file
+     * @return array of Strings containing headers
+     * @throws Exception
+     */
     public static String[] getHeader(File file) throws Exception {
         CSVReader reader = null;
         try {

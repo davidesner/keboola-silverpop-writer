@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Pojo class of xml mapping file used as a configuration for ImportList API
+ * command.
  *
  * @author David Esner <esnerda at gmail.com>
  * @created 2015

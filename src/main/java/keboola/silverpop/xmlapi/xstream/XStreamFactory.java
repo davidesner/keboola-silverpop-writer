@@ -19,7 +19,7 @@ import java.io.Writer;
 public class XStreamFactory {
 
     /**
-     * Builds Xstream with driver ignoring undefined elements
+     * Builds Xstream with driver ignoring undefined elements when serializing.
      *
      * @return
      */

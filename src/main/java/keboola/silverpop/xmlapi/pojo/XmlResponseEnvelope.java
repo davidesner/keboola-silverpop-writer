@@ -6,6 +6,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import keboola.silverpop.xmlapi.pojo.results.SPResult;
 
 /**
+ * Pojo class of Engage XML API command wrapper.
  *
  * @author David Esner <esnerda at gmail.com>
  * @created 2015

@@ -7,22 +7,12 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.SocketException;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.apache.commons.net.ftp.FTPReply;
-import org.apache.commons.net.ftp.FTPSClient;
 
 /**
  *
@@ -44,6 +34,11 @@ public class SFTPClient {
         sftpClient = new JSch();;
     }
 
+    /**
+     * Connect to SFTP server. Ignore host key chcecking.
+     *
+     * @throws FtpException
+     */
     public void connect() throws FtpException {
         try {
 
@@ -68,6 +63,14 @@ public class SFTPClient {
         session.disconnect();
     }
 
+    /**
+     * Upload file to the remote repository
+     *
+     * @param remoteFolder
+     * @param fileName
+     * @param localFilePath
+     * @throws FtpException
+     */
     public void uploadFile(String remoteFolder, String fileName, String localFilePath) throws FtpException {
         try {
             File localFile = new File(localFilePath);
@@ -80,7 +83,7 @@ public class SFTPClient {
 
             ChannelSftp sftpChannel = (ChannelSftp) channel;
             InputStream in = new FileInputStream(localFile);
-            BufferedInputStream bin = new BufferedInputStream(in, 512);
+            BufferedInputStream bin = new BufferedInputStream(in, 1024);
 
             sftpChannel.cd(remoteFolder);
             sftpChannel.put(bin, fileName);
@@ -95,6 +98,14 @@ public class SFTPClient {
 
     }
 
+    /**
+     * Upload file to the remote repository using InputStream
+     *
+     * @param remoteFolder - path of the remote folder
+     * @param fileName
+     * @param in - Input stream to upload.
+     * @throws FtpException
+     */
     public void uploadFile(String remoteFolder, String fileName, InputStream in) throws FtpException {
         try {
 
@@ -103,7 +114,7 @@ public class SFTPClient {
 
             ChannelSftp sftpChannel = (ChannelSftp) channel;
 
-            BufferedInputStream bin = new BufferedInputStream(in, 512);
+            BufferedInputStream bin = new BufferedInputStream(in, 1024);
 
             sftpChannel.cd(remoteFolder);
             sftpChannel.put(bin, fileName);
@@ -116,6 +127,14 @@ public class SFTPClient {
 
     }
 
+    /**
+     * Download contents of a file to String
+     *
+     * @param remoteFolder - Path of the remote folder
+     * @param fileName - file name
+     * @return content of remote file serialized to string
+     * @throws FtpException
+     */
     public String downloadFileToString(String remoteFolder, String fileName) throws FtpException {
         try {
 

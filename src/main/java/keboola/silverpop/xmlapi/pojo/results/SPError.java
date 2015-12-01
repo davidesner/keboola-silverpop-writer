@@ -5,6 +5,7 @@ package keboola.silverpop.xmlapi.pojo.results;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
+ * Pojo of XML API fault result.
  *
  * @author David Esner <esnerda at gmail.com>
  * @created 2015

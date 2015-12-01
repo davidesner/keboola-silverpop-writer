@@ -7,6 +7,8 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import java.util.List;
 
 /**
+ * Pojo class of xml mapping file used as a configuration for ImportList API
+ * command.
  *
  * @author David Esner <esnerda at gmail.com>
  * @created 2015

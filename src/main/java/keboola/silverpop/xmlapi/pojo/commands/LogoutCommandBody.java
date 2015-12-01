@@ -3,6 +3,7 @@
 package keboola.silverpop.xmlapi.pojo.commands;
 
 /**
+ * Pojo class of Engage XML API command body.
  *
  * @author David Esner <esnerda at gmail.com>
  * @created 2015

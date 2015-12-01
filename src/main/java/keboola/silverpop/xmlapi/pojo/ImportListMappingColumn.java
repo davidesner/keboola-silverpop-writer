@@ -5,6 +5,8 @@ package keboola.silverpop.xmlapi.pojo;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
+ * Pojo class of xml mapping file used as a configuration for ImportList API
+ * command.
  *
  * @author David Esner <esnerda at gmail.com>
  * @created 2015

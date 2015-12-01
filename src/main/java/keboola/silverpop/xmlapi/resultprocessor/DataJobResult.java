@@ -7,6 +7,7 @@ import java.util.Map;
 import keboola.silverpop.xmlapi.pojo.results.GetJobStatusResult;
 
 /**
+ * DataJobResult object containing populated error messages and status messages.
  *
  * @author David Esner <esnerda at gmail.com>
  * @created 2015
