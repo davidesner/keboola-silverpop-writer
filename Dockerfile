@@ -10,7 +10,7 @@ RUN yum -y install apache-maven
 RUN yum -y install git-all
 WORKDIR /home
 
-RUN git clone https://gitlab.com/desner/keboola-SilverPop-Writer.git ./  
+RUN git clone https://github.com/davidesner/keboola-silverpop-writer.git ./  
 RUN mvn compile
 
 ENTRYPOINT mvn exec:java -Dexec.args=/data  
