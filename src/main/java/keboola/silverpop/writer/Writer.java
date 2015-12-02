@@ -82,7 +82,7 @@ public class Writer {
         }
 
         XStream xstream = XStreamFactory.getXstream2();
-
+        System.out.println("Building configuration..");
         /* Build MapFile / configuration*/
         boolean isOptOut = false;
         if (config.getParams().getAction() != null) {
@@ -145,7 +145,7 @@ public class Writer {
 
         //create string inputstream
         InputStream in = new ByteArrayInputStream(mapFileXml.getBytes(StandardCharsets.UTF_8));
-
+        System.out.println("Uploading files to Engage FTP...");
         /*Upload files to ftp*/
         SFTPClient ftpclient = new SFTPClient(config.getParams().getUser(), config.getParams().getPass(), config.getParams().getSftpUrl());
         try {
@@ -163,7 +163,7 @@ public class Writer {
         } catch (IOException ex) {
             System.out.println("Error disconnecting from ftp.");
         }
-
+        System.out.println("Performing XML API request and proccessing results...");
         /*Send api request*/
         XmlApiClient client = new XmlApiClient(config.getParams().getUser(),
                 config.getParams().getPass(), config.getParams().getApiUrl());
