@@ -84,7 +84,7 @@ public class DataJobResult {
         p = params.get("RESULTS_FILE_NAME");
         error_file_name = p == null ? "" : p;
 
-        if (rows_parsed == rows_valid && cont_added + cont_updated > 0) {
+        if (rows_parsed == rows_valid && cont_added + cont_updated > 0 && rows_invalid == 0) {
             finishedSuccess = true;
         } else {
             finishedSuccess = false;
