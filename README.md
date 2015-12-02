@@ -1,1 +1,0 @@
-KBC component for writing contacts using SilverPop API
