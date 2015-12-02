@@ -52,6 +52,7 @@ source file but not the database.
 
 *Define which columns in the source file will be mapped to which columns in the database. If not defined, the names of the columns in the source table are expected to match those in Engage database. If any of the mandatory columns is not specified, or the source file does not contain all of them, the import process will fail. Check with the specification of your Engage db structure. If updating existing rows, only KEY columns must be specified, either in mapping or in source table. 
 __NOTE:__ column names are NOT case sensitive.*
+
 *__NOTE2:__ If the _action_ parameter is not _OPT_OUT_, columns related to the OPT OUT action - e.g. _OPTED OUT DATE_, _OPTED OUT DETAILS_, or _OPTED OUT_ must not be included in the mapping. Otherwise, the import will fail.*
 ```
 Ex.
