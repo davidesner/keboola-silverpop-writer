@@ -138,7 +138,20 @@ public class Writer {
         xstream.processAnnotations(ImportListMapping.class);
         xstream.processAnnotations(ImportListMapFileWrapper.class);
         String mapFileXml = xstream.toXML(mapFile);
+        
+        /*Try to login with API*/
+         XmlApiClient client = new XmlApiClient(config.getParams().getUser(),
+                config.getParams().getPass(), config.getParams().getApiUrl());
+        XmlResponseBody response = null;
+        String jobId;
 
+        try {
+            client.login();
+        } catch (ApiException ex) {
+            System.out.println("Failed to login with API. " + ex.getMessage());
+            System.err.println(ex.getMessage());
+            System.exit(1);
+        }
         //create string inputstream
         InputStream in = new ByteArrayInputStream(mapFileXml.getBytes(StandardCharsets.UTF_8));
         System.out.println("Uploading files to Engage FTP...");
@@ -161,18 +174,7 @@ public class Writer {
         }
         System.out.println("Performing XML API request and proccessing results...");
         /*Send api request*/
-        XmlApiClient client = new XmlApiClient(config.getParams().getUser(),
-                config.getParams().getPass(), config.getParams().getApiUrl());
-        XmlResponseBody response = null;
-        String jobId;
-
-        try {
-            client.login();
-        } catch (ApiException ex) {
-            System.out.println("Failed to login with API. " + ex.getMessage());
-            System.err.println(ex.getMessage());
-            System.exit(1);
-        }
+       
         /*Build and send ImportList command*/
         ImportListCommandBody impListBody = new ImportListCommandBody("map_file.xml", sourceFile.getName());
         /*API request*/
