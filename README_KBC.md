@@ -9,19 +9,19 @@ It implements a subset of API commands supporting following actions:
 Therefore, it does not allow creation of new databases or new columns in an existing db. It allows adding and updating existing data in specified Engage database and contact list(s).
 
 ##Configuration
-**user**
+**user** (REQ)
 
 *Your Engage portal user login*
 
-**#pass**
+**#pass** (REQ)
 
 *Your Engage portal login password*
 
-**api_url**
+**api_url** (REQ)
 
 *URL of the XML API endpoint*
 
-**sftp_url**
+**sftp_url** (REQ)
 
 *URL of the engage FTP server*
 
