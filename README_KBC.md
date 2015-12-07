@@ -9,6 +9,12 @@ It implements a subset of API commands supporting following actions:
 Therefore, it does not allow creation of new databases or new columns in an existing db. It allows adding and updating existing data in specified Engage database and contact list(s).
 
 ##Configuration
+###Input configuration
+The data that are to be imported to the Silverpop database are defined by Input mapping within KBC. User must simply define the source table containing the desired data in the *Table Input Mapping* section. See screenshot bellow.
+
+![](https://raw.githubusercontent.com/davidesner/keboola-silverpop-writer/master/screens/config.png)
+
+###Configuration parameters
 **user** (REQ)
 
 *Your Engage portal user login*
