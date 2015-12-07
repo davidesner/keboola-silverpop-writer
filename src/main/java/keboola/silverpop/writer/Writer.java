@@ -280,15 +280,11 @@ public class Writer {
     }
 
     private static boolean isOptOutCommand(String c) {
-        if (c.equalsIgnoreCase("opted out")
+        return c.equalsIgnoreCase("opted out")
                 || c.equalsIgnoreCase("opted_out")
                 || c.equalsIgnoreCase("opted out date")
                 || c.equalsIgnoreCase("opted_out_date")
                 || c.equalsIgnoreCase("opted_out_details")
-                || c.equalsIgnoreCase("opted out details")) {
-            return true;
-        } else {
-            return false;
-        }
+                || c.equalsIgnoreCase("opted out details");
     }
 }
