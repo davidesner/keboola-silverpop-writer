@@ -35,7 +35,7 @@ import keboola.silverpop.xmlapi.resultprocessor.DataJobResult;
  */
 public class Writer {
 
-    private static final long JOB_WAIT_INTERVAL = 180000;
+    private static final long JOB_WAIT_INTERVAL = 600000;
 
     public static void main(String[] args) {
 
