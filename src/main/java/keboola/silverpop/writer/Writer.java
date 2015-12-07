@@ -8,16 +8,12 @@ import keboola.silverpop.xmlapi.client.XmlApiClient;
 import keboola.silverpop.xmlapi.pojo.ImportListListInfo;
 import keboola.silverpop.xmlapi.pojo.ImportListMapFileWrapper;
 import keboola.silverpop.xmlapi.pojo.ImportListMapping;
-import keboola.silverpop.xmlapi.pojo.ImportListMappingColumn;
 import keboola.silverpop.xmlapi.pojo.XmlResponseBody;
 import keboola.silverpop.xmlapi.xstream.XStreamFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -264,7 +260,7 @@ public class Writer {
     }
 
     /**
-     * Searches for a string in an array.
+     * Searches for a string in an array. Not case sensitive.
      *
      * @param list - array to search in
      * @param search - searched String key
@@ -272,7 +268,8 @@ public class Writer {
      */
     private static int arrayContains(String[] list, String search) {
         for (int i = 0; i < list.length; i++) {
-            if (list[i].contains(search)) {
+            String c = list[i].toLowerCase();
+            if (c.equals(search.toLowerCase())) {
                 return i;
             }
         }
