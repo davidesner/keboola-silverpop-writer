@@ -1,5 +1,5 @@
 #Silverpop writer for Keboola Connection
-KBC component for writing contacts data using Silverpop XML API. It leverages Silerpop's asynchronous API allowing to update or add large amounts of contact data. 
+KBC component for writing contact data using Silverpop XML API. It leverages Silerpop's asynchronous API allowing to update or add large amounts of contact data. 
 
 It implements a subset of API commands supporting following actions:
 - Add
