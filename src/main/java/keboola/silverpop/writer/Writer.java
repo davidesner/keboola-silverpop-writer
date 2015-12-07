@@ -218,7 +218,7 @@ public class Writer {
                     DataJobResult dRes = ApiResultProcessor.proccessDataJob((GetJobStatusResult) response.getResult(), ftpclient);
                     System.out.println("SilverPop internal job execution error. " + dRes.getResultMessage());
                     System.err.println("SilverPop internal job execution error. " + dRes.getResultMessage());
-                    System.exit(2);
+                    System.exit(1);
                 }
                 try {
                     Thread.sleep(10000);
@@ -241,7 +241,7 @@ public class Writer {
         if (!finished) {
             System.out.println("SilverPop internal job execution exceeded time limit of " + JOB_WAIT_INTERVAL / 10000 + " seconds.");
             System.err.println("SilverPop internal job execution exceeded time limit of " + JOB_WAIT_INTERVAL / 10000 + " seconds.");
-            System.exit(2);
+            System.exit(1);
         }
 
 
