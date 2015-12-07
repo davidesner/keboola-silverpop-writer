@@ -15,7 +15,7 @@ Therefore, it does not allow creation of new databases or new columns in an exis
 
 **#pass** (REQ)
 
-*Your Engage portal login password*
+*Your Engage portal password*
 
 **api_url** (REQ)
 
@@ -23,7 +23,7 @@ Therefore, it does not allow creation of new databases or new columns in an exis
 
 **sftp_url** (REQ)
 
-*URL of the engage FTP server*
+*URL of the Engage FTP server*
 
 **list_date_format** (OPT) default: dd/mm/yyyy hh:mm a (e.g. 25/11/2015 10:05 AM)
 
