@@ -1,19 +1,35 @@
+#Silverpop writer for Keboola Connection
+KBC component for writing contact data using Silverpop XML API. It leverages Silerpop's asynchronous API allowing to update or add large amounts of contact data. 
+
+It implements a subset of API commands supporting following actions:
+- Add
+- Update
+- Opt Out
+
+Therefore, it does not allow creation of new databases or new columns in an existing db. It allows adding and updating existing data in specified Engage database and contact list(s).
+
 ##Configuration
-**user**
+###Input configuration
+The data that are to be imported to the Silverpop database are defined by Input mapping within KBC. User must simply define the source table containing the desired data in the *Table Input Mapping* section. See screenshot bellow.
+
+![](https://raw.githubusercontent.com/davidesner/keboola-silverpop-writer/master/screens/config.png)
+
+###Configuration parameters
+**user** (REQ)
 
 *Your Engage portal user login*
 
-**#pass**
+**#pass** (REQ)
 
-*Your Engage portal login password*
+*Your Engage portal password*
 
-**api_url**
+**api_url** (REQ)
 
 *URL of the XML API endpoint*
 
-**sftp_url**
+**sftp_url** (REQ)
 
-*URL of the engage FTP server*
+*URL of the Engage FTP server*
 
 **list_date_format** (OPT) default: dd/mm/yyyy hh:mm a (e.g. 25/11/2015 10:05 AM)
 

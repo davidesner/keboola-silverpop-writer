@@ -8,16 +8,12 @@ import keboola.silverpop.xmlapi.client.XmlApiClient;
 import keboola.silverpop.xmlapi.pojo.ImportListListInfo;
 import keboola.silverpop.xmlapi.pojo.ImportListMapFileWrapper;
 import keboola.silverpop.xmlapi.pojo.ImportListMapping;
-import keboola.silverpop.xmlapi.pojo.ImportListMappingColumn;
 import keboola.silverpop.xmlapi.pojo.XmlResponseBody;
 import keboola.silverpop.xmlapi.xstream.XStreamFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,7 +35,7 @@ import keboola.silverpop.xmlapi.resultprocessor.DataJobResult;
  */
 public class Writer {
 
-    private static final long JOB_WAIT_INTERVAL = 180000;
+    private static final long JOB_WAIT_INTERVAL = 600000;
 
     public static void main(String[] args) {
 
@@ -142,7 +138,20 @@ public class Writer {
         xstream.processAnnotations(ImportListMapping.class);
         xstream.processAnnotations(ImportListMapFileWrapper.class);
         String mapFileXml = xstream.toXML(mapFile);
+        
+        /*Try to login with API*/
+         XmlApiClient client = new XmlApiClient(config.getParams().getUser(),
+                config.getParams().getPass(), config.getParams().getApiUrl());
+        XmlResponseBody response = null;
+        String jobId;
 
+        try {
+            client.login();
+        } catch (ApiException ex) {
+            System.out.println("Failed to login with API. " + ex.getMessage());
+            System.err.println(ex.getMessage());
+            System.exit(1);
+        }
         //create string inputstream
         InputStream in = new ByteArrayInputStream(mapFileXml.getBytes(StandardCharsets.UTF_8));
         System.out.println("Uploading files to Engage FTP...");
@@ -165,18 +174,7 @@ public class Writer {
         }
         System.out.println("Performing XML API request and proccessing results...");
         /*Send api request*/
-        XmlApiClient client = new XmlApiClient(config.getParams().getUser(),
-                config.getParams().getPass(), config.getParams().getApiUrl());
-        XmlResponseBody response = null;
-        String jobId;
-
-        try {
-            client.login();
-        } catch (ApiException ex) {
-            System.out.println("Failed to login with API. " + ex.getMessage());
-            System.err.println(ex.getMessage());
-            System.exit(1);
-        }
+       
         /*Build and send ImportList command*/
         ImportListCommandBody impListBody = new ImportListCommandBody("map_file.xml", sourceFile.getName());
         /*API request*/
@@ -220,7 +218,7 @@ public class Writer {
                     DataJobResult dRes = ApiResultProcessor.proccessDataJob((GetJobStatusResult) response.getResult(), ftpclient);
                     System.out.println("SilverPop internal job execution error. " + dRes.getResultMessage());
                     System.err.println("SilverPop internal job execution error. " + dRes.getResultMessage());
-                    System.exit(2);
+                    System.exit(1);
                 }
                 try {
                     Thread.sleep(10000);
@@ -243,7 +241,7 @@ public class Writer {
         if (!finished) {
             System.out.println("SilverPop internal job execution exceeded time limit of " + JOB_WAIT_INTERVAL / 10000 + " seconds.");
             System.err.println("SilverPop internal job execution exceeded time limit of " + JOB_WAIT_INTERVAL / 10000 + " seconds.");
-            System.exit(2);
+            System.exit(1);
         }
 
 
@@ -264,7 +262,7 @@ public class Writer {
     }
 
     /**
-     * Searches for a string in an array.
+     * Searches for a string in an array. Not case sensitive.
      *
      * @param list - array to search in
      * @param search - searched String key
@@ -272,7 +270,8 @@ public class Writer {
      */
     private static int arrayContains(String[] list, String search) {
         for (int i = 0; i < list.length; i++) {
-            if (list[i].contains(search)) {
+            String c = list[i].toLowerCase();
+            if (c.equals(search.toLowerCase())) {
                 return i;
             }
         }
