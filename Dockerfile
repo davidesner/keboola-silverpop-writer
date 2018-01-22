@@ -14,8 +14,6 @@ ENV MAVEN_OPTS='-Xmx512m -Xms512m -Djdk.tls.client.protocols="TLSv1,TLSv1.1,TLSv
 
 WORKDIR /home
 
-ENV JAVA_HOME /usr/lib/jvm/jre-1.7.0
-
 RUN git clone https://github.com/davidesner/keboola-silverpop-writer.git ./
 RUN mvn compile
 
