@@ -17,4 +17,4 @@ WORKDIR /home
 RUN git clone https://github.com/davidesner/keboola-silverpop-writer.git ./
 RUN mvn compile
 
-ENTRYPOINT mvn exec:java -Dexec.args=/data
+ENTRYPOINT mvn -q exec:java -Dexec.args=/data

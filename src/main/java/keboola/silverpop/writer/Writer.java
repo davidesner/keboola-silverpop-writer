@@ -42,7 +42,6 @@ public class Writer {
     private static final long JOB_WAIT_INTERVAL = 600000;
 
     public static void main(String[] args) {
-    	System.out.println(generateUniqueMapFileName());
         if (args.length == 0) {
             System.out.print("No parameters provided.");
             System.exit(1);
