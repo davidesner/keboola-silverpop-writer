@@ -1,33 +1,37 @@
 package keboola.silverpop.writer;
 
-import com.thoughtworks.xstream.XStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.thoughtworks.xstream.XStream;
+
+import keboola.silverpop.ftp.FtpException;
+import keboola.silverpop.ftp.SFTPClient;
+import keboola.silverpop.writer.config.KBCConfig;
+import keboola.silverpop.writer.config.YamlConfigParser;
+import keboola.silverpop.writer.utils.CsvProcesser;
 import keboola.silverpop.xmlapi.client.ApiException;
 import keboola.silverpop.xmlapi.client.XmlApiClient;
 import keboola.silverpop.xmlapi.pojo.ImportListListInfo;
 import keboola.silverpop.xmlapi.pojo.ImportListMapFileWrapper;
 import keboola.silverpop.xmlapi.pojo.ImportListMapping;
 import keboola.silverpop.xmlapi.pojo.XmlResponseBody;
-import keboola.silverpop.xmlapi.xstream.XStreamFactory;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import keboola.silverpop.ftp.FtpException;
-import keboola.silverpop.ftp.SFTPClient;
-import keboola.silverpop.writer.config.KBCConfig;
-import keboola.silverpop.writer.config.YamlConfigParser;
-import keboola.silverpop.writer.utils.CsvProcesser;
 import keboola.silverpop.xmlapi.pojo.commands.GetJobStatusCommandBody;
 import keboola.silverpop.xmlapi.pojo.commands.ImportListCommandBody;
 import keboola.silverpop.xmlapi.pojo.results.GetJobStatusResult;
 import keboola.silverpop.xmlapi.pojo.results.ImportListResult;
 import keboola.silverpop.xmlapi.resultprocessor.ApiResultProcessor;
 import keboola.silverpop.xmlapi.resultprocessor.DataJobResult;
+import keboola.silverpop.xmlapi.xstream.XStreamFactory;
 
 /**
  * Hello world!
@@ -38,7 +42,7 @@ public class Writer {
     private static final long JOB_WAIT_INTERVAL = 600000;
 
     public static void main(String[] args) {
-
+    	System.out.println(generateUniqueMapFileName());
         if (args.length == 0) {
             System.out.print("No parameters provided.");
             System.exit(1);
@@ -156,11 +160,12 @@ public class Writer {
         InputStream in = new ByteArrayInputStream(mapFileXml.getBytes(StandardCharsets.UTF_8));
         System.out.println("Uploading files to Engage FTP...");
         /*Upload files to ftp*/
+        String mapFileName = generateUniqueMapFileName();
         SFTPClient ftpclient = new SFTPClient(config.getParams().getUser(), config.getParams().getPass(), config.getParams().getSftpUrl());
         try {
             ftpclient.connect();
             ftpclient.uploadFile("upload", sourceFile.getName(), sourceFile.getAbsolutePath());
-            ftpclient.uploadFile("upload", "map_file.xml", in);
+            ftpclient.uploadFile("upload", mapFileName, in);
 
         } catch (FtpException ex) {
             System.out.println("Failed to upload the file to ftp repository. " + ex.getMessage());
@@ -176,7 +181,7 @@ public class Writer {
         /*Send api request*/
        
         /*Build and send ImportList command*/
-        ImportListCommandBody impListBody = new ImportListCommandBody("map_file.xml", sourceFile.getName());
+        ImportListCommandBody impListBody = new ImportListCommandBody(mapFileName, sourceFile.getName());
         /*API request*/
         try {
             response = client.apiRequest(impListBody);
@@ -259,6 +264,20 @@ public class Writer {
         }
 
         System.out.println();
+    }
+
+
+    private static String generateUniqueMapFileName() {
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+    	String currDateStamp = sdf.format(new Date());
+    	return getKbcProjectId() + getKbcRunId() + "_" + currDateStamp + ".xml";
+    }
+    private static String getKbcProjectId() {
+    	return System.getenv("KBC_PROJECTID");
+    }
+
+    private static String getKbcRunId() {
+    	return System.getenv("KBC_RUNID");
     }
 
     /**
