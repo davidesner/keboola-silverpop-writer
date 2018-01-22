@@ -1,21 +1,16 @@
-FROM keboola/base
+# instead of maven:3.5.0-jdk-7-alpine, contained old java version
+FROM maven:3.5.2-jdk-7-slim  
 
 MAINTAINER David Esner <esnerda@gmail.com>
 
 ENV APP_VERSION 1.2.0
+# install git
+RUN apt-get update -y
+RUN apt-get install -y git-core
 
-RUN yum -y update && \
-	yum -y install \
-		epel-release \
-		git \
-		tar \
-		&& \
-	yum clean all
-
-
-RUN yum -y install wget
-RUN wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
-RUN yum -y install apache-maven
+# set switch that enables correct JVM memory allocation in containers
+ENV JAVA_OPTS='-Xmx512m -Xms512m  -Djdk.tls.client.protocols="TLSv1,TLSv1.1,TLSv1.2"'
+ENV MAVEN_OPTS='-Xmx512m -Xms512m -Djdk.tls.client.protocols="TLSv1,TLSv1.1,TLSv1.2"'
 
 WORKDIR /home
 
